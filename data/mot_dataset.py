@@ -14,7 +14,7 @@ from PIL import Image
 import pandas as pd
 import pycocotools.mask as mask_util
 import numpy as np
-
+from typing import List
 
 class MOTDataset(Dataset):
     """
@@ -95,7 +95,9 @@ class MOTDataset(Dataset):
         structure = {"dataset": dataset, "split": split}
         if dataset == "DanceTrack" or dataset == "SportsMOT":
             split_dir = os.path.join(dataset_dir, split)
+            # print(split_dir)
             seq_names = os.listdir(split_dir)
+            # print(seq_names[:3])
             structure["seqs"] = {
                 seq: {
                     "images_dir": os.path.join(split_dir, seq, "img1"),
@@ -103,7 +105,7 @@ class MOTDataset(Dataset):
                     "images_name": os.listdir(os.path.join(split_dir, seq, "img1")),
                     "max_frame": max([int(_[:-4]) for _ in os.listdir(os.path.join(split_dir, seq, "img1"))])
                 }
-                for seq in seq_names
+                for seq in seq_names if seq != '.DS_Store'
             }
         elif dataset == "CrowdHuman":
             split_dir = os.path.join(dataset_dir, split)
@@ -247,7 +249,7 @@ class MOTDataset(Dataset):
                                     raise NotImplementedError(f"Do not support dataset weight '{weight}'.")
         return
 
-    def sample_frames_idx(self, dataset: str, split: str, seq: str, begin: int) -> list[int]:
+    def sample_frames_idx(self, dataset: str, split: str, seq: str, begin: int) -> List[int]:
         if self.sample_mode == "random_interval":
             if dataset in ["CrowdHuman"]:       # static images, repeat is all right:
                 return [begin] * self.sample_length
@@ -266,7 +268,7 @@ class MOTDataset(Dataset):
             raise NotImplementedError(f"Do not support sample mode '{self.sample_mode}'.")
         return frames_idx
 
-    def get_multi_frames(self, dataset: str, split: str, seq: str, frames: list[int]):
+    def get_multi_frames(self, dataset: str, split: str, seq: str, frames: List[int]):
         return zip(*[self.get_single_frame(dataset=dataset, split=split, seq=seq, frame=frame) for frame in frames])
 
     def get_single_frame(self, dataset: str, split: str, seq: str, frame: int):

@@ -67,9 +67,9 @@ class MultiRandomHorizontalFlip:
             images, infos = zip(*[hflip(img, info) for img, info in zip(images, infos)])
         return images, infos
 
-
+from typing import Union,Optional
 class MultiRandomResize:
-    def __init__(self, sizes: list | tuple, max_size: int | None = None):
+    def __init__(self, sizes: Union[list ,tuple], max_size: Optional[int] = None):
         self.sizes = sizes
         self.max_size = max_size
 

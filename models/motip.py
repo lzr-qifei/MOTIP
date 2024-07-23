@@ -13,7 +13,7 @@ from structures.args import Args
 from utils.utils import batch_iterator, combine_detr_outputs
 from collections import deque
 from structures.ordered_set import OrderedSet
-
+from typing import Deque,List,Optional
 
 class MOTIP(nn.Module):
     def __init__(self, config: dict):
@@ -124,7 +124,7 @@ class MOTIP(nn.Module):
     @torch.no_grad()
     def inference(
             self,
-            trajectory_history: deque[Instances],
+            trajectory_history: Deque[Instances],
             num_id_vocabulary: int,
             ids_to_results: dict,
             current_id: int,
@@ -326,7 +326,7 @@ class MOTIP(nn.Module):
 
     def forward_train(
             self,
-            track_history: list[list[Instances]],
+            track_history: List[List[Instances]],
             traj_drop_ratio: float,
             traj_switch_ratio: float,
             use_checkpoint: bool = False,
@@ -342,7 +342,7 @@ class MOTIP(nn.Module):
 
         return pred_id_words, gt_id_words
 
-    def add_random_id_words_to_instances(self, instances: list[Instances]):
+    def add_random_id_words_to_instances(self, instances: List[Instances]):
         # assert len(instances) == 1  # only for bs=1
         ids = torch.cat([instance.ids for instance in instances], dim=0)
         ids_unique = torch.unique(ids)
@@ -377,7 +377,7 @@ class MOTIP(nn.Module):
             instances[t] = instances[t][ins_keep_index]
         return
 
-    def forward(self, frames, detr_checkpoint_frames: int | None = None, targets=None, max_pad=None):
+    def forward(self, frames, detr_checkpoint_frames: Optional[int] = None, targets=None, max_pad=None):
         if detr_checkpoint_frames is not None:
             # Checkpoint will only be used in the training stage.
             detr_outputs = None

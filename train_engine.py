@@ -396,8 +396,8 @@ def generate_match_instances(match_idxs, infos, detr_outputs):
             match_instances[b].append(instances)
     return match_instances
 
-
-def get_param_groups(model: nn.Module, config) -> list[dict]:
+from typing import List
+def get_param_groups(model: nn.Module, config) -> List[dict]:
     def match_names(name, key_names):
         for key in key_names:
             if key in name:

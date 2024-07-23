@@ -14,7 +14,7 @@ from torch.utils import tensorboard as tb
 
 from log.log import Metrics
 from utils.utils import is_main_process
-
+from typing import Optional
 
 class ProgressLogger:
     def __init__(self, total_len: int, prompt: str = None, only_main: bool = True):
@@ -133,12 +133,19 @@ class Logger:
             with open(os.path.join(self.logdir, filename), mode=mode) as f:
                 f.write(log)
         return
-
+    
     def save_metrics(self, metrics: Metrics, prompt: str = "",
-                     fmt: None | str = "{average:.4f} ({global_average:.4f})",
-                     statistic: None | str = "average", global_step: int = 0, prefix: None | str = None,
-                     x_axis_step: None | int = None, x_axis_name: None | str = None,
+                    #  fmt: None | str = "{average:.4f} ({global_average:.4f})",
+                     fmt:Optional[str] = "{average:.4f} ({global_average:.4f})",
+                    #  statistic: None | str = "average", global_step: int = 0, prefix: None | str = None,
+                     statistic: Optional[str] = "average",global_step: int = 0,prefix: Optional[str] = None,
+                     x_axis_step: Optional[int] = None, x_axis_name: Optional[str]  = None,
                      filename: str = "log.txt", file_mode: str = "a"):
+    # def save_metrics(self, metrics: Metrics, prompt: str = "",
+    #                 fmt: str = "{average:.4f} ({global_average:.4f})",
+    #                 statistic: str = "average", global_step: int = 0, prefix:str = None,
+    #                 x_axis_step: int = None, x_axis_name:str = None,
+    #                 filename: str = "log.txt", file_mode: str = "a"):
         """
         Save the metrics into .txt/tensorboard/wandb.
 
@@ -235,7 +242,7 @@ class Logger:
     #     if self.use_wandb:
 
     def save_metrics_to_tensorboard(self, metrics: Metrics, statistic: str = "average",
-                                    global_step: int = 0, prefix: None | str = None):
+                                    global_step: int = 0, prefix: str = None):
         for name, value in metrics.metrics.items():
             if prefix is not None:
                 metric_name = f"{prefix}_{name}"
@@ -248,7 +255,7 @@ class Logger:
         return
 
     def save_metrics_to_wandb(self, metrics: Metrics, statistic: str = "average",
-                              global_step: int = 0, prefix: None | str = None):
+                              global_step: int = 0, prefix: Optional[str] = None):
         for name, value in metrics.metrics.items():
             if prefix is not None:
                 metric_name = f"{prefix}_{name}"

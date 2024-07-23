@@ -95,8 +95,8 @@ def is_unique(config: dict, keys_set: set = None) -> [bool, set]:
 
     return True, keys_set
 
-
-def load_super_config(config: dict, super_config_path: str | None):
+from typing import Optional
+def load_super_config(config: dict, super_config_path: Optional[str] = None):
     if super_config_path is None:
         return config
     else:

@@ -14,7 +14,7 @@ from .trajectory_modeling import TrajectoryAugmentation
 from .id_decoder import IDDecoder
 from .ffn import FFN
 from utils.box_ops import box_cxcywh_to_xyxy, generalized_box_iou
-
+from typing import List
 # import configs.runtime as runtime
 
 
@@ -79,7 +79,7 @@ class SeqDecoder(nn.Module):
 
     def forward(
             self,
-            track_seqs: list[list[Instances]],
+            track_seqs: List[List[Instances]],
             traj_drop_ratio: float = 0.0,
             traj_switch_ratio: float = 0.0,
             use_checkpoint: bool = False,
@@ -159,7 +159,7 @@ class SeqDecoder(nn.Module):
     def prepare(
             self,
             # The whole track_seqs, which contains the current detection results:
-            track_seqs: list[list[Instances]],
+            track_seqs: List[List[Instances]],
             # The training augmentation parameters:
             traj_drop_ratio: float = 0.0,
             traj_switch_ratio: float = 0.0,
